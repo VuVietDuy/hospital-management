@@ -22,6 +22,7 @@ exports.makeApponitment = (req, res) => {
         Date: data.Date,
         Start_Hour: data.Start_Hour,
         End_Hour: addOneHour(data.Start_Hour),
+        Payment: data.Payment,
         Status: "Pending",
     });
 
