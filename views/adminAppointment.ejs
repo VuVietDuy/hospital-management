@@ -103,7 +103,7 @@
                     <iconify-icon icon="maki:doctor" width="50" height="50" class ='bx'></iconify-icon>
                     <span class="info">
                         <h3>
-                            xxx
+                            <%- JSON.stringify(attend) %>
                         </h3>
                         <p>Attend</p>
                     </span>
@@ -112,7 +112,7 @@
                     <iconify-icon icon="tabler:heart-rate-monitor" width="50" height="50" class ='bx'></iconify-icon>
                     <span class="info">
                         <h3>
-                            xxx
+                            <%- JSON.stringify(pendingAppointment) %>
                         </h3>
                         <p>Pending</p>
                     </span>
@@ -146,9 +146,9 @@
                                 <tr>
                                     <td>
                                         <img src="images/ava.jpg">
-                                        <p><%= item.Name %></p>
+                                        <p><%= item.Patient %></p>
                                     </td>
-                                    <td>Duong</td>
+                                    <td><%= item.Staff %></td>
                                     <td><%= item.Service %></td>
                                     <td><%= item.Date %></td>
                                     <td><%= item.Start_Hour %></td>

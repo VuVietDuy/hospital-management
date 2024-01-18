@@ -96,7 +96,10 @@ module.exports = app => {
     });
   });
   router.get('/adminAppointment', authMiddleware.loggedin, (req, res) => {
-    sql.query(config, 'SELECT a.Appointment_ID, a.Date, a.Start_Hour, a.Status, p.Name as Patient, s.Name as Service FROM Appointment a INNER JOIN Patient p ON a.Patient_ID = p.Patient_ID INNER JOIN Service s ON a.Service_ID = s.Service_ID;',
+    sql.query(config, `SELECT a.Appointment_ID, a.Date, a.Start_Hour, a.Status, p.Name as Patient, s.Name as Service, st.Name as Staff FROM Appointment a 
+    INNER JOIN Patient p ON a.Patient_ID = p.Patient_ID 
+    INNER JOIN staff st ON a.Staff_ID = st.Staff_ID 
+    INNER JOIN Service s ON a.Service_ID = s.Service_ID;`,
       (err, results) => {
         const appointments = results || [];
         appointments.forEach(appointment => {
@@ -109,7 +112,13 @@ module.exports = app => {
             const staffCount = countResult[0].staffCount;
             sql.query(config, 'SELECT COUNT(patient_id) AS patientCount FROM Patient', (err, countRes) => {
               const patientCount = countRes[0].patientCount;
-              res.render('adminAppointment', { appointments, doctors, staffCount, patientCount });
+              sql.query(config, 'SELECT COUNT(*) AS pendingAppointment FROM Appointment WHERE Status = ?', ["Pending"], (err, countPendingAppointment) => {
+                const pendingAppointment = countPendingAppointment[0].pendingAppointment;
+                sql.query(config, 'SELECT COUNT(*) AS countAttend FROM Appointment WHERE Status != ?', ["Pending"], (err, countAttend) => {
+                  const attend = countAttend[0].countAttend;
+                  res.render('adminAppointment', { appointments, doctors, staffCount, patientCount, pendingAppointment , attend});
+                })
+              })
             })
           });
         });
