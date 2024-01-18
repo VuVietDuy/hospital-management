@@ -21,6 +21,7 @@
             <div class="input-box">
               <span class="details">Date Appointment</span>
               <input
+                id="date"
                 type="date"
                 name="Date"
                 min="<%= currentDate %>"
@@ -29,27 +30,33 @@
             </div>
             <div class="input-box">
               <span class="details">Hour Appointment</span>
-              <select class="Select" name="Start_Hour" required>
+              <select id="selectHour" class="Select" name="Start_Hour" required>
                 <option value="" disabled selected>Select an hour</option>
-                <option value="7:00">7:00AM</option>
-                <option value="8:00">8:00AM</option>
-                <option value="9:00">9:00AM</option>
-                <option value="10:00">10:00AM</option>
-                <option value="11:00">11:00AM</option>
-                <option value="12:00">12:00PM</option>
-                <option value="13:00">1:00PM</option>
-                <option value="14:00">2:00PM</option>
-                <option value="15:00">3:00PM</option>
-                <option value="16:00">4:00PM</option>
-                <option value="17:00">5:00PM</option>
-                <option value="18:00">6:00PM</option>
-                <option value="19:00">7:00PM</option>
-                <option value="20:00">8:00PM</option>
-                <option value="21:00">9:00PM</option>
-                <option value="22:00">10:00PM</option>
-                <option value="23:00">11:00PM</option>
-                <option value="24:00">12:00AM</option>
+                <option value="7:00:00">7:00AM</option>
+                <option value="8:00:00">8:00AM</option>
+                <option value="9:00:00">9:00AM</option>
+                <option value="10:00:00">10:00AM</option>
+                <option value="11:00:00">11:00AM</option>
+                <option value="12:00:00">12:00PM</option>
+                <option value="13:00:00">1:00PM</option>
+                <option value="14:00:00">2:00PM</option>
+                <option value="15:00:00">3:00PM</option>
+                <option value="16:00:00">4:00PM</option>
+                <option value="17:00:00">5:00PM</option>
+                <option value="18:00:00">6:00PM</option>
+                <option value="19:00:00">7:00PM</option>
+                <option value="20:00:00">8:00PM</option>
+                <option value="21:00:00">9:00PM</option>
+                <option value="22:00:00">10:00PM</option>
+                <option value="23:00:00">11:00PM</option>
+                <option value="24:00:00">12:00AM</option>
                 <!-- Add more hours if needed -->
+              </select>
+            </div>
+            <div class = "input-box">
+              <span class="details">Payment</span>
+              <select id="selectRoom" class="Select" name="Room_ID" required>
+                <option value="" disabled selected>Please select date and hour</option>
               </select>
             </div>
             <div class = "input-box">
@@ -68,5 +75,40 @@
         </form>
       </div>
     </div>
+    <script>
+      const selectHour = document.querySelector("#selectHour")
+      const date = document.querySelector("#date")
+      const selectRoom = document.querySelector("#selectRoom");
+
+      selectHour.addEventListener('change', (e) => {
+        console.log("hour >> ", selectHour.value);
+        console.log("date >> ", date.value);
+
+        const apiUrl = `http://localhost:3000/getRoom?Date=${date.value}&Start_Hour=${selectHour.value}`;
+
+        fetch(apiUrl)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            selectRoom.length = 0;
+            data.forEach(function(optionData) {
+              var option = document.createElement("option");
+              option.value = optionData.Room_ID;
+              option.text = optionData.Name;
+
+              selectRoom.add(option);
+            });
+            
+          })
+          .catch(error => {
+            console.error('Fetch error:', error);
+          });
+      })
+
+    </script>
   </body>
 </html>

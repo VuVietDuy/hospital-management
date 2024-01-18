@@ -134,7 +134,7 @@ module.exports = app => {
   router.post('/changeAppointmentStatus', (req, res) => {
     console.log(req.body.newStatus, req.body.appointmentId);
     if (req.body.newStatus === "Approved") {
-      sql.query(config, 'SELECT * FROM Appointment WHERE Appointment_ID = ?;', [req.body.appointmentId], (err, appointment) => {
+      sql.query(config, 'SELECT * FROM Appointment a INNER JOIN Room r ON a.Room_ID = r.Room_ID WHERE Appointment_ID = ?;', [req.body.appointmentId], (err, appointment) => {
         const a = appointment[0];
         sql.query(config, 'SELECT * FROM staff WHERE Staff_ID = ?;', [a.Staff_ID], (err, staff) => {
           console.log(staff[0]);
@@ -142,8 +142,8 @@ module.exports = app => {
           const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-              user: 'duyvv.dev@gmail.com',
-              pass: 'gync qfms ykvo vkrw',
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
             },
           });
           
@@ -152,7 +152,7 @@ module.exports = app => {
             from: 'duyvv.dev@gmail.com',
             to: s.Email,
             subject: 'Your upcoming appointment',
-            text: `You have an appointment on ${utils.formatDate(a.Date)} at ${utils.formatHour(a.Start_Hour)} in room 4`,
+            text: `You have an appointment on ${utils.formatDate(a.Date)} at ${utils.formatHour(a.Start_Hour)} in room ${a.Name}`,
           };
           
           // Send the email

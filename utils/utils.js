@@ -6,11 +6,15 @@ function formatDate(dateStr) {
     return `${day}/${month}/${year}`;
 }
 
-function formatHour(dateStr) {
-    const date = new Date(dateStr)
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+function formatHour(inputDateTime) {
+    if (inputDateTime === undefined) return "";
+    const inputDate = new Date(inputDateTime);
+    const hours = String(inputDate.getHours()).padStart(2, "0");
+    const minutes = String(inputDate.getMinutes()).padStart(2, "0");
+    const seconds = String(inputDate.getSeconds()).padStart(2, "0");
+
+    const formattedDateTime = `${hours}:${minutes}:${seconds}`;
+    return formattedDateTime;
 }
 
 function getCurrentDate() {
